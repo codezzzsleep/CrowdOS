@@ -1,11 +1,7 @@
 package cn.crowdos.kernel.constraint;
 
-import cn.crowdos.kernel.DecomposeException;
-import cn.crowdos.kernel.Decomposer;
-
-import javax.swing.*;
 import java.awt.*;
-import java.util.*;
+import java.util.ArrayList;
 import java.util.List;
 
 public class PolygonVisualizer extends Canvas {

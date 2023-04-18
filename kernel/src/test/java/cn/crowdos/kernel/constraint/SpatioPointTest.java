@@ -1,6 +1,5 @@
 package cn.crowdos.kernel.constraint;
 
-import cn.crowdos.kernel.wrapper.DateCondition;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.*;
