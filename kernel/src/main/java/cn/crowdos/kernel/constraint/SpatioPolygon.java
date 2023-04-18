@@ -2,7 +2,6 @@ package cn.crowdos.kernel.constraint;
 
 import cn.crowdos.kernel.DecomposeException;
 import cn.crowdos.kernel.Decomposer;
-import javafx.scene.layout.CornerRadii;
 
 import java.util.ArrayList;
 import java.util.Arrays;

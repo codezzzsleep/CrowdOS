@@ -1,8 +1,9 @@
 package cn.crowdos.kernel.constraint;
+
 import cn.crowdos.kernel.Decomposer;
+
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
-import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 

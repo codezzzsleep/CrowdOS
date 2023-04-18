@@ -4,7 +4,6 @@ import cn.crowdos.kernel.DecomposeException;
 import cn.crowdos.kernel.Decomposer;
 import cn.crowdos.kernel.wrapper.DateCondition;
 
-import javax.xml.crypto.Data;
 import java.time.Duration;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
