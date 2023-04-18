@@ -2,7 +2,6 @@ package cn.crowdos.kernel.wrapper;
 
 import cn.crowdos.kernel.constraint.Condition;
 
-import javax.activation.DataContentHandler;
 import java.util.Date;
 
 public class DateCondition extends Date implements Condition {
