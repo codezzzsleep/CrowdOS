@@ -183,9 +183,7 @@ public class Kernel implements CrowdKernel {
      * The getTaskAssignmentScheme(@code{@code {ArrayList<Task>} tasks) function is used to assign tasks to participants.
      * The function takes in a list of tasks and returns a list of participant lists, where each sublist
      * contains the participants assigned to that task.
-     *
      * @param tasks Pass the tasks to be assigned to the scheduler
-     *
      * @return A list of participant lists.
      */
     @Override
