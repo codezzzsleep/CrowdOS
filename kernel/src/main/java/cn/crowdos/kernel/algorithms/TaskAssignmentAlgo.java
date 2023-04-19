@@ -16,10 +16,10 @@ public interface TaskAssignmentAlgo {
      */
     List<Participant> getAssignmentScheme(Task task);
     default List<List<Participant>> getAssignmentScheme(ArrayList<Task> tasks){
-        List<List<Participant>> candidate = new ArrayList<List<Participant>>();
+        List<List<Participant>> candidate = new ArrayList<>();
         for(Task task : tasks){
             candidate.add(getAssignmentScheme(task));
         }
         return candidate;
-    };
+    }
 }

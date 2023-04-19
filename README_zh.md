@@ -1,5 +1,8 @@
-# CrowdOS [![license](https://img.shields.io/github/license/loyx/CrowdOS)](https://www.apache.org/licenses/LICENSE-2.0) [![build](https://img.shields.io/github/actions/workflow/status/loyx/CrowdOS/maven.yml)]()  [![issues](https://img.shields.io/github/issues/loyx/CrowdOS)]()
+ [![license](https://img.shields.io/github/license/loyx/CrowdOS)](https://www.apache.org/licenses/LICENSE-2.0) [![build](https://img.shields.io/github/actions/workflow/status/loyx/CrowdOS/maven.yml)]()  [![issues](https://img.shields.io/github/issues/loyx/CrowdOS)]()
+ 
 
+
+![Logo](https://raw.githubusercontent.com/li-haoyang1/CrowdOS/master/src/site/resources/images/logo.jpg)
 CrowdOS是一个无处不在的操作系统，用于[Crowdsoucring](https://en.wikipedia.org/wiki/Crowdsourcing)和[移动众包](https://en.wikipedia.org/wiki/Crowdsensing)，它可以同时处理多种类型的它可以同时处理多种类型的众包问题。
 
 ## 安装和入门

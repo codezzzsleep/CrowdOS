@@ -34,6 +34,19 @@ public class Scheduler implements Resource<Scheduler> {
         taskRecommendationAlgo = algoFactory.getTaskRecommendationAlgo();
         taskAssignmentAlgo = algoFactory.getTaskAssignmentAlgo();
     }
+
+    /**
+     * The setAlgoFactory function is used to set the AlgoFactory that will be used by the
+     * TaskAssignmentManager. The name of the AlgoFactory must be passed in as a parameter, and
+     * this function will then use that name to retrieve an instance of an AlgoFactory from
+     * ResourceCollection. This retrieved instance is then stored in algoFactory, which can later
+     * be accessed by other functions within TaskAssignmentManager. In addition, this function also
+     * retrieves instances of ParticipantSelectionAlgorithm and TaskRecommendationAlgorithm from
+     * algoFactory (which are both interfaces),
+     *
+     * @param name Get the needed algorithms from the resourceCollection.
+     *
+     */
     public void setAlgoFactory(String name){
         SystemResourceHandler<AlgoFactory> resourceHandler = resourceCollection.getResourceHandler(AlgoContainer.class,name);
         algoFactory = resourceHandler.getResource();

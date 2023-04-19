@@ -1,4 +1,7 @@
-# CrowdOS [![license](https://img.shields.io/github/license/loyx/CrowdOS)](https://www.apache.org/licenses/LICENSE-2.0) [![build](https://img.shields.io/github/actions/workflow/status/loyx/CrowdOS/maven.yml)]() [![lang](https://img.shields.io/github/languages/top/loyx/CrowdOS)]() [![issues](https://img.shields.io/github/issues/loyx/CrowdOS)]() [![fork](https://img.shields.io/github/forks/loyx/CrowdOS?style=social)]() [![stars](https://img.shields.io/github/stars/loyx/CrowdOS?style=social)]()
+ [![license](https://img.shields.io/github/license/loyx/CrowdOS)](https://www.apache.org/licenses/LICENSE-2.0) [![build](https://img.shields.io/github/actions/workflow/status/loyx/CrowdOS/maven.yml)]() [![lang](https://img.shields.io/github/languages/top/loyx/CrowdOS)]() [![issues](https://img.shields.io/github/issues/loyx/CrowdOS)]() [![fork](https://img.shields.io/github/forks/loyx/CrowdOS?style=social)]() [![stars](https://img.shields.io/github/stars/loyx/CrowdOS?style=social)]()
+ 
+ 
+ ![Logo](https://raw.githubusercontent.com/li-haoyang1/CrowdOS/master/src/site/resources/images/logo.jpg)
 
 CrowdOS is a ubiquitous operating system for [Crowdsoucring](https://en.wikipedia.org/wiki/Crowdsourcing) and
 [Mobile Crowdsensing](https://en.wikipedia.org/wiki/Crowdsensing), which can deal with multiple types of 

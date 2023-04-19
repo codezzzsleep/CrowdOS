@@ -3,6 +3,10 @@ package cn.crowdos.kernel.algorithms;
 import java.util.*;
 
 /**
+ * This class represents a random task assignment algorithm for the multi-worker multi-task problem.
+ * It randomly assigns tasks to workers based on a given distance matrix between workers and tasks, and a given
+ * distance matrix between tasks.
+ *
  * @author wushengjie
  */
 public class T_Random {
@@ -11,48 +15,51 @@ public class T_Random {
 
     private int taskNum;
 
-    private double[][] distanceMatrix;  //距离矩阵(工人和任务的距离)
+    private double[][] distanceMatrix;
 
-    private double[][] taskDistanceMatrix; //任务距离矩阵，对角线元素为0或MAX_VALUE
+    private double[][] taskDistanceMatrix;
 
-    private int q; //每个工人最多执行多少个任务,或者说工人需要在有限时间内完成所有任务
+    private int q;
 
-    private int[] p; //每个任务需要多少个工人执行
+    private int[] p;
 
-    private Map<Integer, List<Integer>> assignMap = new HashMap<>(); //保存任务分配结果
+    private Map<Integer, List<Integer>> assignMap = new HashMap<>();
 
-    private final Double INF = Double.MAX_VALUE; //距离矩阵为该值时，表示(i,j)不再分配任务
+    private final Double INF = Double.MAX_VALUE;
 
-    private double distance; //总距离
+    private double distance;
 
-    private double[][] distanceMatrixTemp; //距离矩阵的临时变量，最后用于计算总距离
+    private double[][] distanceMatrixTemp;
 
     /**
-     * @param workerNum          工人数量
-     * @param taskNum            任务数量
-     * @param distanceMatrix     工人任务距离矩阵，保存工人和任务之间的距离（或者为某工人完成某任务的代价）
-     * @param taskDistanceMatrix 任务距离矩阵，保存任务和任务之间的距离
-     * @param p                  约束条件，每个任务需要多少工人
-     * @param q                  约束条件，每个工人最多分配多少任务
+     * Constructs a new T_Random object with the given parameters.
+     *
+     * @param workerNum the number of workers
+     * @param taskNum the number of tasks
+     * @param distanceMatrix the distance matrix between workers and tasks
+     * @param taskDistanceMatrix the distance matrix between tasks
+     * @param p the number of tasks assigned to each worker
+     * @param q the number of workers assigned to each task
      */
     public T_Random(int workerNum, int taskNum, double[][] distanceMatrix, double[][] taskDistanceMatrix, int[] p, int q) {
+        //initialize instance variables
         this.workerNum = workerNum;
         this.taskNum = taskNum;
         this.distanceMatrix = distanceMatrix;
         this.taskDistanceMatrix = taskDistanceMatrix;
-        //将任务距离矩阵对角线元素置为INF,方便计算
+        ////set diagonal elements of taskDistanceMatrix to INF for convenience
         for (int i = 0; i < this.taskDistanceMatrix.length; i++) {
             this.taskDistanceMatrix[i][i] = INF;
         }
         this.q = q;
         this.p = p;
 
-        //初始化Map
+        //initialize assignMap
         for (int i = 0; i < workerNum; i++) {
             this.assignMap.put(i, new ArrayList<>());
         }
 
-        //复制距离矩阵
+        //copy distanceMatrix to distanceMatrixTemp
         distanceMatrixTemp = new double[workerNum][taskNum];
         for (int i = 0; i < workerNum; i++) {
             for (int j = 0; j < taskNum; j++) {
@@ -62,7 +69,12 @@ public class T_Random {
     }
 
     /**
-     * 算法主函数
+     * Assign tasks to workers randomly and greedily based on the distance between tasks and workers.
+     * This method uses a random starting task and assigns the closest worker to that task.
+     * Then, it iteratively assigns the closest task to the current worker until the worker is assigned the maximum
+     * number of tasks or no more available tasks can be assigned.
+     * The method also updates the distance matrix and assigns the results to the {@code assignMap} map.
+     * Finally, it calculates the total distance of the assignments and updates the {@code totalDistance} field.
      */
     public void taskAssign() {
 
@@ -71,11 +83,11 @@ public class T_Random {
         int workerIndex;
 
 
-        //检查所有任务是否分配完成
+        //Check that all tasks have been assigned
         while (!isTaskAssignFinish()) {
 
 
-            //在需要工人的任务里随机选择初始任务
+            //Randomly select the initial task among the tasks that need workers
             List<Integer> randomTaskList = new ArrayList<>();
             for (int i = 0; i < taskNum; i++) {
                 if (countTaskIndex(i) < p[i]) {
@@ -86,7 +98,7 @@ public class T_Random {
             taskIndex = randomTaskList.get(0);
 
 
-            //选择离初始任务最近的工人
+            //The worker closest to the initial task is selected
             workerIndex = findMinWorkerToTask(taskIndex);
 
 
@@ -99,17 +111,17 @@ public class T_Random {
                 continue;
             }
 
-            //加入分配结果Map
+            //Join the allocation result Map
             assignMap.get(workerIndex).add(taskIndex);
-            //重置矩阵
+            //Reset matrix
             distanceMatrix[workerIndex][taskIndex] = INF;
 
-            //计数器
+            //A counter
             int count = 0;
 
             while (!isTaskAssignFinish() || isAssignWorker(workerIndex)) {
 
-                //若有5个任务，依次选择4个任务
+                //If there are five tasks, select four tasks in turn
                 if (count == taskNum - 1) {
                     break;
                 }
@@ -121,15 +133,15 @@ public class T_Random {
                 count++;
 
 
-                //检查该工人是否还能接受任务,该任务是否还需要工人
+                //Check whether the worker can still accept the task and whether the task still needs workers
                 if (isAssignTask(taskIndex_) || isAssignWorker(workerIndex)) {
                     continue;
                 }
 
-                //加入分配结果Map
+                //Join the allocation result Map
                 assignMap.get(workerIndex).add(taskIndex_);
 
-                //重置矩阵
+                //Reset matrix
                 distanceMatrix[workerIndex][taskIndex_] = INF;
 
                 isAssignTask(taskIndex_);
@@ -141,10 +153,11 @@ public class T_Random {
     }
 
     /**
-     * 找到离任务最近的工人，未找到则返回-1
+     * Finds the index of the worker who is closest to the given task.
      *
-     * @param taskIndex
-     * @return int
+     * @param taskIndex the index of the task for which the closest worker is being searched
+     *
+     * @return the index of the closest worker, or -1 if no worker is available
      */
     private int findMinWorkerToTask(int taskIndex) {
         double min = INF;
@@ -159,67 +172,69 @@ public class T_Random {
     }
 
     /**
-     * 将所有任务离此任务的距离按升序排列，按任务序号储存
+     * Find the tasks that are closest to the given task.
      *
-     * @param taskIndex
-     * @return {@code int[]}
+     * @param taskIndex the index of the given task
+     *
+     * @return an array of task indices, sorted in ascending order of their distances to the given task
      */
     private int[] findMinTaskToTask(int taskIndex) {
 
-        //保存任务序号
+        // Create an array to store task indices
         int[] taskIndexArray = new int[taskNum];
 
         Map<Integer, Double> taskDistanceMap = new HashMap<>();
 
+        // Populate the map with task indices and their corresponding distances to the given task
         for (int i = 0; i < taskNum; i++) {
             taskDistanceMap.put(i, taskDistanceMatrix[taskIndex][i]);
         }
 
-        //对map按value进行排序
+        //Sort the map by value in ascending order
         Map<Integer, Double> sortMap = sortMap(taskDistanceMap);
 
 
-        //遍历taskDistanceMap，将对应的任务序号存入taskIndexArray
+        // Traverse the sorted map and store the corresponding task indices in the array
         int count = 0;
         for (Map.Entry<Integer, Double> entry : sortMap.entrySet()) {
             taskIndexArray[count] = entry.getKey();
             count++;
         }
 
-        //打印taskIndexArray
-//        System.out.println(taskIndex);
-//        for (int i = 0; i < taskNum; i++) {
-//            System.out.print(taskIndexArray[i] + " ");
-//        }
-//        System.out.println();
 
         return taskIndexArray;
     }
 
 
     /**
-     * 1、将Map的entrySet转换为List
-     * 2、用Collections工具类的sort方法排序
-     * 3、遍历排序好的list，将每组key，value放进LinkedHashMap(Map的实现类只有LinkedHashMap是根据插入顺序来存储)
+     * Sorts the given map by value in ascending order and returns a LinkedHashMap with the sorted entries.
+     *  1、Converts the entrySet of the Map to a List
+     *  2、sort with the sort method of the Collections utility class
+     *  3、Iterate over the sorted list and put each set of keys and values
+     *  into a LinkedHashMap(the only Map implementation class that stores the values
+     *  in order of insertion is LinkedHashMap).
      *
-     * @param map
-     * @return {@code Map<Integer, Double>}
+     * @param map the map to be sorted
+     *
+     * @return a LinkedHashMap with the sorted entries
      */
+
     public Map<Integer, Double> sortMap(Map<Integer, Double> map) {
 
-        //利用Map的entrySet方法，转化为list进行排序
+        //Convert the map into a list of entries and sort it by value in ascending order
         List<Map.Entry<Integer, Double>> entryList = new ArrayList<>(map.entrySet());
 
-        //利用Collections的sort方法对list排序
+        //sort the list using the Collections sort method
         Collections.sort(entryList, new Comparator<Map.Entry<Integer, Double>>() {
             @Override
             public int compare(Map.Entry<Integer, Double> o1, Map.Entry<Integer, Double> o2) {
-                //正序排列，倒序反过来
+                //Positive order, reverse order
                 return Double.compare(o1.getValue(), o2.getValue());
             }
         });
 
-        //遍历排序好的list，一定要放进LinkedHashMap，因为只有LinkedHashMap是根据插入顺序进行存储
+        //As you iterate through the sorted list, it's important to include the LinkedHashMap,
+        // because only the LinkedHashMap is stored in the order in which it was inserted
         LinkedHashMap<Integer, Double> linkedHashMap = new LinkedHashMap<>();
         for (Map.Entry<Integer, Double> e : entryList
         ) {
@@ -230,10 +245,12 @@ public class T_Random {
     }
 
     /**
-     * 判断该工人是否可以再接受任务，并将该行元素全设为最大
+     * Check if the worker is already assigned with q number of tasks.
+     * If the worker is assigned with q number of tasks, set the distance between this worker and all tasks to INF (infinite).
      *
-     * @param workerIndex workerIndex
-     * @return boolean
+     * @param workerIndex the index of the worker to be checked
+     *
+     * @return true if the worker is already assigned with q number of tasks, false otherwise
      */
     public boolean isAssignWorker(int workerIndex) {
 
@@ -248,10 +265,12 @@ public class T_Random {
     }
 
     /**
-     * 判断该任务是否还需要工人，并将该列元素全设为最大
+     * Checks whether the given task has been assigned to enough workers based on its required number of workers.
+     * If so, updates the distance matrix by setting the distance to INF for all workers to that task.
      *
-     * @param taskIndex
-     * @return boolean
+     * @param taskIndex The index of the task to check.
+     *
+     * @return True if the task has been assigned to enough workers, false otherwise.
      */
     public boolean isAssignTask(int taskIndex) {
         if (countTaskIndex(taskIndex) == p[taskIndex]) {
@@ -264,10 +283,11 @@ public class T_Random {
     }
 
     /**
-     * 计算此任务已经分配给多少工人了
+     * Counts the number of workers that have been assigned a particular task.
      *
-     * @param taskIndex
-     * @return int
+     * @param taskIndex The index of the task to count the number of workers for.
+     *
+     * @return The number of workers that have been assigned the specified task.
      */
     public int countTaskIndex(int taskIndex) {
         int count = 0;
@@ -280,9 +300,9 @@ public class T_Random {
     }
 
     /**
-     * 检查所有任务是否分配完成
+     * Checks whether all tasks have been assigned to the required number of workers or not.
      *
-     * @return boolean
+     * @return true if all tasks have been assigned to the required number of workers, false otherwise.
      */
     public boolean isTaskAssignFinish() {
         for (int i = 0; i < taskNum; i++) {
@@ -294,19 +314,19 @@ public class T_Random {
     }
 
     /**
-     * 打印任务分配结果
+     * Print the assignment result
      */
     public void printAssignMap() {
         for (Map.Entry<Integer, List<Integer>> entry : assignMap.entrySet()) {
-            System.out.println("工人" + entry.getKey() + "分配的任务为：" + entry.getValue());
+            System.out.println("worker" + entry.getKey() + "The assigned task is：" + entry.getValue());
         }
     }
 
     /**
-     * 打印距离矩阵
+     * Print the assignment result
      */
     public void printDistanceMatrix() {
-        System.out.println("当前距离矩阵为------------------------------------");
+        System.out.println("The current distance matrix is------------------------------------");
         for (int i = 0; i < distanceMatrix.length; i++) {
             for (int j = 0; j < distanceMatrix[i].length; j++) {
                 System.out.print(distanceMatrix[i][j] + " ");
@@ -316,23 +336,23 @@ public class T_Random {
     }
 
     /**
-     * 计算距离，工人完成任务需移动的总距离，即总代价
+     * Calculate the total distance the worker needs to travel to complete the task
      */
     public void countDistance() {
         distance = 0;
-        //遍历assignMap，计算距离
+        //Iterate over the assignMap and calculate the distance
         for (int i = 0; i < workerNum; i++) {
             List<Integer> taskList = assignMap.get(i);
             if (taskList.size() == 0) {
                 continue;
             }
-            //计算工人i到第一个任务的距离
+            //Calculate the distance of worker i to the first task
             distance += distanceMatrixTemp[i][taskList.get(0)];
-            //计算工人i从第一个任务到最后一个任务的距离
+            //Calculate the distance of worker i from the first task to the last task
             for (int j = 0; j < taskList.size() - 1; j++) {
                 distance += taskDistanceMatrix[taskList.get(j)][taskList.get(j + 1)];
             }
-            //计算工人i从最后一个任务到工人i的距离
+            //Calculate the distance of worker i from the last task to worker i
             distance += distanceMatrixTemp[i][taskList.get(taskList.size() - 1)];
         }
     }

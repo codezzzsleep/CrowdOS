@@ -8,6 +8,8 @@ public class AlgoContainer extends ResourceContainer<AlgoFactory> {
     public AlgoContainer(AlgoFactory resource) {
         super(resource);
     }
+
+
     @Override
     public SystemResourceHandler<AlgoFactory> getHandler() {
         return new SystemResourceHandler<AlgoFactory>() {
