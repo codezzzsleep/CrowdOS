@@ -17,7 +17,7 @@ public class DateDeadlineTest {
     DateDeadline dateDeadline;
     {
         try{
-            dateDeadline = new DateDeadline("2023-04-18");
+            dateDeadline = new DateDeadline("4023-04-18");
         } catch (InvalidConstraintException e) {
             throw new RuntimeException(e);
         }
@@ -52,8 +52,8 @@ public class DateDeadlineTest {
         SimpleDateFormat df = new SimpleDateFormat("yyyy.MM.dd");
         DateCondition condition1, condition2;
         try {
-            condition1 = new DateCondition(df.parse("2023.04.10").getTime());
-            condition2 = new DateCondition(df.parse("2023.06.04").getTime());
+            condition1 = new DateCondition(df.parse("3023.04.10").getTime());
+            condition2 = new DateCondition(df.parse("7023.06.04").getTime());
         } catch (ParseException e) {
             throw new RuntimeException(e);
         }
