@@ -16,7 +16,6 @@ public class EncryptCoordinate implements Condition {
      * @param encryptedlongitude Set the encryptedlongitude variable
      * @param encryptedlatitude Set the encryptedlatitude variable
      *
-     * @return An encrypted coordinate
      */
     public EncryptCoordinate(Integer encryptedlongitude, Integer encryptedlatitude) {
         this.encryptedlongitude = encryptedlongitude;

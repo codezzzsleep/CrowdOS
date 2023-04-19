@@ -325,7 +325,7 @@ public class PT_Most {
      * values into a LinkedHashMap(the only Map implementation class
      * that stores the values in order of insertion is LinkedHashMap).
      *
-     * @param map map<Integer, Double>
+     * @param map {@code map<Integer, Double>}
      *
      * @return {@code Map<Integer, Double>}
      */

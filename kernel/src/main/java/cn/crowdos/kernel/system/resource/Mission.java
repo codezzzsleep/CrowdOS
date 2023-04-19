@@ -68,7 +68,7 @@ public class Mission {
      * The updateSubmit function updates the participant's submission time to the current time.
      *
      * @param participant Determine which participant is being updated
-     *
+     * @throws MissionUpdateException MissionUpdateException
      */
     public void updateSubmit(Participant participant) throws MissionUpdateException {
         updateSubmit(participant, new Date());
@@ -79,7 +79,7 @@ public class Mission {
      *
      * @param participant Identify the participant that is updating their status
      * @param submitTime Determine the order in which participants submit their work
-     *
+     * @throws MissionUpdateException MissionUpdateException
      */
     public void updateSubmit(Participant participant, Date submitTime) throws MissionUpdateException {
         if (!participants.contains(participant) || submitParticipants.contains(participant)){

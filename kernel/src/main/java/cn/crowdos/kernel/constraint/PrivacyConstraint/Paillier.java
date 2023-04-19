@@ -12,7 +12,6 @@ public class Paillier {
      * The Paillier function takes in two BigIntegers and returns a new BigInteger
      * that is the result of encrypting the first parameter with the second.
      *
-     * @return The encrypted value of the plaintext m
      */
     public Paillier() {
         random = new SecureRandom();

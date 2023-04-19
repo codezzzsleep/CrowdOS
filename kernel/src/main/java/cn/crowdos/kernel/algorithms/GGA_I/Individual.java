@@ -48,6 +48,13 @@ public class Individual implements Serializable {
 
 
     /**
+     *
+     * @param workerNum workerNum
+     * @param taskNum taskNum
+     * @param distanceMatrix distanceMatrix
+     * @param taskDistanceMatrix taskDistanceMatrix
+     * @param p p
+     * @param q q
      */
     public Individual(int workerNum,int taskNum,double[][] distanceMatrix,double[][] taskDistanceMatrix,int[] p,int q) {
 
@@ -70,7 +77,14 @@ public class Individual implements Serializable {
     }
 
     /**
-     * @param greedyType 0：Nearest Neighbor greedy algorithm
+     *
+     * @param workerNum workerNum
+     * @param taskNum taskNum
+     * @param distanceMatrix distanceMatrix
+     * @param taskDistanceMatrix taskDistanceMatrix
+     * @param p p
+     * @param q q
+     * @param greedyType greedyType
      */
     public Individual(int workerNum,int taskNum,double[][] distanceMatrix,double[][] taskDistanceMatrix,
                       int[] p,int q,int greedyType) {

@@ -28,7 +28,7 @@ public class TemporalInterval implements Constraint{
      *
      * @param start Set the start time of the temporalinterval
      * @param end Create a localtime object
-     *
+     * @throws InvalidConstraintException {@link InvalidConstraintException}
      */
     public TemporalInterval(String start, String end) throws InvalidConstraintException {
         this(LocalTime.parse(start), LocalTime.parse(end));
@@ -42,7 +42,7 @@ public class TemporalInterval implements Constraint{
      *
      * @param startTime Set the starttime of the temporalinterval
      * @param  endTime Set the endtime of the temporalinterval object
-     *
+     * @throws InvalidConstraintException {@link InvalidConstraintException}
      */
     public TemporalInterval(LocalTime startTime, LocalTime endTime) throws InvalidConstraintException{
         this.startTime = startTime;

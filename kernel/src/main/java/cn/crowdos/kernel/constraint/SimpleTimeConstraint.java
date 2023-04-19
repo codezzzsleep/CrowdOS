@@ -29,7 +29,7 @@ public class SimpleTimeConstraint implements Constraint{
      *
      * @param startDate Set the start date of the constraint
      * @param endDate Set the end date of the time constraint
-     *
+     * @throws InvalidConstraintException {@link InvalidConstraintException}
      */
     public SimpleTimeConstraint(Date startDate, Date endDate) throws InvalidConstraintException {
         if (startDate.compareTo(endDate) >= 0) throw new InvalidConstraintException();
@@ -45,7 +45,7 @@ public class SimpleTimeConstraint implements Constraint{
      *
      * @param startDateStr Set the start date of the constraint
      * @param endDateStr Parse the end date
-     *
+     * @throws InvalidConstraintException {@link InvalidConstraintException}
      */
     public SimpleTimeConstraint(String startDateStr, String endDateStr) throws InvalidConstraintException {
         SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy.MM.dd");

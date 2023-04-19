@@ -44,7 +44,7 @@ public class SimpleEncryptSpatioConstraint implements Constraint {
      *
      * Returns a Decomposer object that can decompose constraints.
      *
-     * @return Decomposer<Constraint> object for decomposing constraints
+     * @return {@code Decomposer<Constraint>} object for decomposing constraints
      */
 
     @Override

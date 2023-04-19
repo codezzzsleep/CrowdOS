@@ -8,20 +8,20 @@ import java.util.Map;
 
 /**
  * <p>This interface defines an incentive-based approach to trustworthiness.
- * It extends the Resource<CredibilityBasedIncentive> interface and defines the following methods:</p>
+ * It extends the {@code Resource<CredibilityBasedIncentive>} interface and defines the following methods:</p>
  *
  * <ul>
  *   <li>IncentiveAssignment(): returns a Map containing the rewards received by each participant.</li>
  *   <li>earnTrust(Participant participant): increase credibility of participant.</li>
  *   <li>penalizeTrust(Participant participant): reduced credibility of participant.</li>
  *   <li>getTrust(Participant participant): returns the credibility of the participant.</li>
- *   <li>allocateRewards(double rewards, Task task, Participant firstParticipant, List<Participant> participants): allocates rewards to the participants.</li>
+ *   <li>{@code allocateRewards(double rewards, Task task, Participant firstParticipant, List<Participant> participants)}: allocates rewards to the participants.</li>
  *   <li>removeTrustedParticipant(Participant participant): removes the participant from the trusted chain.</li>
  *   <li>isTrustedParticipant(Participant participant): determines whether the participant is trusted.</li>
  *   <li>getTrustedParticipants(): returns all participants in the trusted chain.</li>
  * </ul>
  *
- * The interface is mainly used to motivate participants to complete specific tasks efficiently and to
+ * <p>The interface is mainly used to motivate participants to complete specific tasks efficiently and to
  * distribute rewards by reputation, with a little reward to other participants in the trust chain.</p>
  *
  * @author yuzy

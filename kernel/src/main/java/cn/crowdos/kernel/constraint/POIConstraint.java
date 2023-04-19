@@ -24,9 +24,6 @@ public class POIConstraint implements Constraint{
     }
 
 
-    /**
-     * @return
-     */
     @Override
     public Decomposer<Constraint> decomposer() {
         return new Decomposer<Constraint>() {

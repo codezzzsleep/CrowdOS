@@ -213,8 +213,9 @@ public class GGA_I_Main {
      * When the random number When pcl is smaller than pch,
      * two individuals are randomly found out for gene crossover and exchange
      *
+     * @param population population
+     * @param random random
      */
-
     public void crossover(List<Individual> population, Random random) {
 
         double p = random.nextDouble();
@@ -279,6 +280,7 @@ public class GGA_I_Main {
     /**
      * The individuals are crossed and repaired to satisfy the constraints
      *
+     * @param individual individual
      */
     public void repairIndividual(Individual individual) {
 
@@ -321,6 +323,8 @@ public class GGA_I_Main {
     /**
      * Mutation: Randomly swapping two elements of an individual gene
      *
+     * @param population population
+     * @param random random
      */
     public void mutate(List<Individual> population, Random random) {
         for (Individual individual : population) {
@@ -337,6 +341,7 @@ public class GGA_I_Main {
     /**
      * Deep copy object
      *
+     * @param srcObject srcObject
      * @return Object
      */
     public Object deepClone(Object srcObject) {
