@@ -180,7 +180,7 @@ public class Kernel implements CrowdKernel {
     }
 
     /**
-     * The getTaskAssignmentScheme(@code{ArrayList<Task>} tasks) function is used to assign tasks to participants.
+     * The getTaskAssignmentScheme(@code{@code {ArrayList<Task>} tasks) function is used to assign tasks to participants.
      * The function takes in a list of tasks and returns a list of participant lists, where each sublist
      * contains the participants assigned to that task.
      *
@@ -200,7 +200,7 @@ public class Kernel implements CrowdKernel {
         return resource.taskRecommendation(task);
     }
     /**
-     * The etTaskRecommendationScheme(@code{ArrayList<Task>} tasks) function is used to assign tasks to participants.
+     * The etTaskRecommendationScheme(@code{@code {ArrayList<Task>}} tasks) function is used to assign tasks to participants.
      * The function takes in a list of tasks and returns a list of participant lists,where each sublist
      * contains the participants recommended to that task.
      *
@@ -219,7 +219,7 @@ public class Kernel implements CrowdKernel {
         return resource.participantSelection(task);
     }
     /**
-     * The getTaskParticipantSelectionResult(@code{ArrayList<Task>} tasks) function is used to assign tasks to participants.
+     * The getTaskParticipantSelectionResult(@code{@code {ArrayList<Task>}} tasks) function is used to assign tasks to participants.
      * The function takes in a list of tasks and returns a list of participant lists,where each sublist
      * contains the participants selected for that task.
      *
