@@ -7,50 +7,51 @@ import java.util.*;
 
 
 /**
- * GGA-I算法主体
+ * GGA-IAlgorithm body
  *
  * @author wushengjie
  */
 public class GGA_I_Main {
 
-    private int workerNum; //工人数量
+    private int workerNum;
 
-    private int taskNum; //任务数量
+    private int taskNum;
 
-    private double[][] distanceMatrix; //距离矩阵
+    private double[][] distanceMatrix;
 
-    private double[][] taskDistanceMatrix; //任务距离矩阵
+    private double[][] taskDistanceMatrix;
 
-    private int q; //每个工人最多执行多少个任务
+    private int q;
 
-    private int[] p; //每个任务需要多少个工人执行
+    private int[] p;
 
-    private double threshold = 10000; //阈值
-    private int populationNum = 100; //种群个数
+    private double threshold = 10000;
+    private int populationNum = 100;
 
-    private int maxGen = 300; //进化代数
-    private double crossRate = 0.98;//交叉概率
-    private double mutateRate = 0.4;//变异概率
+    private int maxGen = 300;
+    private double crossRate = 0.98;
+    private double mutateRate = 0.4;
 
     private final double INF = Double.MAX_VALUE;
 
-    private Map<Integer, List<Integer>> assignMap = new HashMap<>(); //保存任务分配结果
+    private Map<Integer, List<Integer>> assignMap = new HashMap<>();
 
 
     /**
-     * @param workerNum          工人数量
-     * @param taskNum            任务数量
-     * @param distanceMatrix     工人任务距离矩阵，保存工人和任务之间的距离（或者为某工人完成某任务的代价）
-     * @param taskDistanceMatrix 任务距离矩阵，保存任务和任务之间的距离
-     * @param p                  约束条件，每个任务需要多少工人
-     * @param q                  约束条件，每个工人最多分配多少任务
+     *  @param workerNum          Number of workers
+     *      * @param taskNum            Number of tasks
+     *      * @param distanceMatrix     Worker task distance matrix, which stores the distance
+     *      *                           between a worker and a task (or the cost of a task for a worker)
+     *      * @param taskDistanceMatrix Task distance matrix, which holds the distance between tasks and tasks
+     *      * @param p                  Constraints, how many workers are needed for each task
+     *      * @param q                  Constraints, how many tasks are assigned to each worker at most
      */
     public GGA_I_Main(int workerNum, int taskNum, double[][] distanceMatrix, double[][] taskDistanceMatrix, int[] p, int q) {
         this.workerNum = workerNum;
         this.taskNum = taskNum;
         this.distanceMatrix = distanceMatrix;
         this.taskDistanceMatrix = taskDistanceMatrix;
-        //将任务矩阵对角元素置为INF
+        //Set the diagonal elements of the task matrix to INF
         for (int i = 0; i < taskNum; i++) {
             this.taskDistanceMatrix[i][i] = INF;
         }
@@ -59,63 +60,54 @@ public class GGA_I_Main {
     }
 
     /**
-     * 算法主函数
+     * Main function of the algorithm
      */
     public void taskAssign() {
 
-//        System.out.println("开始GGA-I算法求解任务分配问题......");
-        //变量声明
-        //种群
+        //Variable declaration
+        //population
         List<Individual> population = new ArrayList<>();
-        //随机数工具
+        //Random number tool
         Random random = new SecureRandom();
-        //开始计算时间
+        //Start computation time
         long startTime = System.currentTimeMillis();
-        //存储最优个体
+        //Store the best individual
         Individual bestIndividual = null;
 
-        //求解
-        //初始化种群
+        //solve
+        //Initializing the population
         initPopulation(population);
-//        System.out.println("初始化种群结束");
-        //迭代优化
+
+        //Iterative optimization
         for (int t = 0; t < maxGen; t++) {
 
-//            System.out.println("第" + t + "代");
-            //选择
+
+            //Selection
             Individual localBestIndividual = select(population, random);
             if (bestIndividual == null || localBestIndividual.getDistance() < bestIndividual.getDistance()) {
                 bestIndividual = localBestIndividual;
-//                System.out.println("最短距离：" + bestIndividual.getDistance());
+
             }
-            //交叉
+            //Cross over
             crossover(population, random);
-//            System.out.println("交叉结束");
-            //变异
+
+            //mutation
             mutate(population, random);
-//            System.out.println("变异结束");
+
 
 
         }
 
 
-        //获取最优解
-//        System.out.println("最短代价为：" + bestIndividual.getDistance());
-//        System.out.println("最优染色体：" + bestIndividual.getAssignMap().toString());
-//        System.out.println("最优工人任务分配方案:");
-//        for (Map.Entry<Integer, List<Integer>> entry : bestIndividual.getAssignMap().entrySet()) {
-//            System.out.println("工人" + entry.getKey() + "分配的任务为：" + entry.getValue());
-//        }
-//        System.out.println("运行时间：" + (System.currentTimeMillis() - startTime) + "ms");
 
-        //复制bestIndividual.getAssignMap()到assignMap
+        //Reproduction bestIndividual. GetAssignMap () to assignMap
         assignMap = new HashMap<>(bestIndividual.getAssignMap());
     }
 
     /**
-     * 初始化种群
+     * Initializing the population
      *
-     * @param population
+     * @param population The initial population list
      */
     public void initPopulation(List<Individual> population) {
         for (int i = 0; i < populationNum; i++) {
@@ -129,22 +121,22 @@ public class GGA_I_Main {
     }
 
     /**
-     * 计算种群中每个个体的适应度和生存率
-     * 选择出最优个体（适应值最高）
+     * The fitness and survival rate of each individual in the population are calculated
+     * Select the best individual (highest fitness)
      *
-     * @param population
+     * @param population Changing population
      * @return {@code Individual}
      */
     public Individual calculateFitnessAndSurvivalRateOfIndividualAndChooseBestOne(List<Individual> population) {
-        ///变量声明
-        //存储种群中所有个体的总适应值
+        //variable declaration
+        //The total fitness of all individuals in the population is stored
         double totalFitness = 0;
-        //存储最优适应值
+        //Store the optimal fitness value
         double bestFitness = -Double.MAX_VALUE;
-        //存储最优个体
+        //Store the best individual
         Individual bestIndividual = null;
 
-        ///计算个体的适应值，并选择出最优个体
+        //Calculate the fitness of the individual and select the best individual
         for (Individual individual : population) {
             individual.calculateDistanceAndFitness();
             totalFitness += individual.getFitness();
@@ -153,14 +145,14 @@ public class GGA_I_Main {
                 bestIndividual = individual;
             }
         }
-        //将最优个体从种群中移除
+        //The best individual is removed from the population
         population.remove(bestIndividual);
-        //删除最优个体对应的适应值
+        //The fitness value corresponding to the best individual is deleted
         totalFitness -= bestIndividual.getFitness();
 
-        ///计算种群中剩余个体的生存率
+        //Calculate the survival rate of the remaining individuals in the population
         for (Individual individual : population) {
-            //个体生存率=个体适应值/种群总适应值
+            //Individual survival rate = individual fitness/total population fitness
             individual.setSurvivalRate(individual.getFitness() / totalFitness);
         }
 
@@ -168,44 +160,47 @@ public class GGA_I_Main {
     }
 
     /**
-     * 选择优秀个体，选择出适应值最高的个体，将个体复制几个，剩余的名额使用轮盘赌从种群剩余个体中选出
+     * Select excellent individuals, select the individual with the highest fitness value,
+     * copy several individuals, and use roulette to select the remaining places from the remaining
+     * individuals of the population
      *
-     * @param population
-     * @param random
+     * @param population Incoming population
+     * @param random Probability of choice
      * @return {@code Individual}
      */
     public Individual select(List<Individual> population, Random random) {
-        //变量声明
-        //新的种群
-        List<Individual> newPopulation = new ArrayList<>();
-        //将最优个体复制几次
-        int cloneNumOfBestIndividual = 3;
-        //至少有一次，否则不会被添加到新种群
-//        cloneNumOfBestIndividual = cloneNumOfBestIndividual == 0 ? 1 : cloneNumOfBestIndividual;
 
-        //选择个体，选择方式：1、选择种群的最优个体，然后复制几次；2、轮盘赌选择剩余的个体
-        //计算种群中每个个体的适应度和生存率并选择出最优个体
+        //New population
+        List<Individual> newPopulation = new ArrayList<>();
+        //The best individual is replicated several times
+        int cloneNumOfBestIndividual = 3;
+        //At least once, otherwise it is not added to the new population
+
+        //Select the individual, the selection method:
+        // 1, select the best individual of the population, and then replicate several times;
+        // 2, roulette selects the remaining individuals
+        //The fitness and survival rate of each individual in the population are calculated and the best individual is selected
         Individual bestIndividual = calculateFitnessAndSurvivalRateOfIndividualAndChooseBestOne(population);
-        ///1、选择种群的最优个体，然后复制几次，将最优个体复制多个，存到新的集合中
+
         for (int i = 0; i < cloneNumOfBestIndividual; i++) {
-            //deepClone对对象进行深拷贝，否则，改变一个属性，其他几个的属性会跟着变化
+
             newPopulation.add((Individual) deepClone(bestIndividual));
         }
 
-        ///2、轮盘赌确定剩余个体
+
         for (int i = 0; i < (populationNum - cloneNumOfBestIndividual); i++) {
             double p = random.nextDouble();
             double sumP = 0;
             for (Individual individual : population) {
                 sumP += individual.getSurvivalRate();
                 if (sumP >= p) {
-                    //选择个体
+                    //Selecting individuals
                     newPopulation.add((Individual) deepClone(individual));
                     break;
                 }
             }
         }
-        //用newPopulationt替换population
+
         population.clear();
         population.addAll(newPopulation);
 
@@ -214,8 +209,9 @@ public class GGA_I_Main {
     }
 
     /**
-     * 交叉
-     * 当随机数&gt;pcl，小于pch时，随机找两个个体出来进行基因交叉互换
+     * Cross over
+     * When the random number When pcl is smaller than pch,
+     * two individuals are randomly found out for gene crossover and exchange
      *
      */
 
@@ -225,7 +221,7 @@ public class GGA_I_Main {
 
         if (p < crossRate) {
 
-            //随机找两个索引,在种群中随机找两个个体
+            //Find two indexes randomly, and find two individuals randomly in the population
             int i = random.nextInt(population.size());
             int j = random.nextInt(population.size());
             while (i == j) {
@@ -234,16 +230,13 @@ public class GGA_I_Main {
             Individual individualI = population.get(i);
             Individual individualJ = population.get(j);
 
-//            System.out.println("执行交叉前-----------------------------------");
-//            System.out.println(individualI.getAssignMap().toString());
-//            System.out.println(individualJ.getAssignMap().toString());
 
-            //随机找一个索引，即随机找一个基因片段
+            //Find a random index, that is, find a random gene segment
             int task = random.nextInt(taskNum);
 
-            //个体1中，此任务有哪些工人
+            //In individual 1, which workers are there for this task
             List<Integer> workerList1 = new ArrayList<>();
-            //个体2中，此任务有哪些工人
+            //In individual 2, which workers are there for this task
             List<Integer> workerList2 = new ArrayList<>();
             for (int k = 0; k < workerNum; k++) {
                 if (individualI.getAssignMap().get(k).contains(task)) {
@@ -253,7 +246,7 @@ public class GGA_I_Main {
                     workerList2.add(k);
                 }
             }
-            //交换workerList1和workerList2的元素，即交换两个任务的工人
+            //Swap the elements of workerList1 and workerList2, that is, swap the workers of the two tasks
             for (int k = 0; k < workerList1.size(); k++) {
                 int worker1 = workerList1.get(k);
                 individualI.getAssignMap().get(worker1).remove((Integer) task);
@@ -272,13 +265,11 @@ public class GGA_I_Main {
                 individualI.getAssignMap().get(worker2).add(task);
             }
 
-            //交叉后，可能会出现工人的任务数超过了上限1个，所以需要进行修复
+            //After crossover, it may happen that the number of tasks of workers exceeds the upper limit of 1,
+            // so it needs to be repaired
             repairIndividual(individualI);
             repairIndividual(individualJ);
 
-//            System.out.println("执行交叉后-----------------------------------");
-//            System.out.println(individualI.getAssignMap().toString());
-//            System.out.println(individualJ.getAssignMap().toString());
 
             population.set(i, individualI);
             population.set(j, individualJ);
@@ -286,7 +277,7 @@ public class GGA_I_Main {
     }
 
     /**
-     * 交叉完修复个体，使其满足约束条件
+     * The individuals are crossed and repaired to satisfy the constraints
      *
      */
     public void repairIndividual(Individual individual) {
@@ -296,13 +287,14 @@ public class GGA_I_Main {
         for (int i = 0; i < workerNum; i++) {
             List<Integer> taskList = individual.getAssignMap().get(i);
             if (taskList.size() > q) {
-                //如果工人的任务数超过了上限，最多只可能超过一个，那么就随机把一个任务移除
+                //If the worker has more than one task, which can be the maximum number,
+                // then a random task is removed
                 int index = random.nextInt(taskList.size());
                 taskList.remove(index);
             }
         }
 
-        //将未分配的任务分配给工人
+        //The unassigned tasks are assigned to the workers
         int count = 0;
         int workerIndex;
         for (int i = 0; i < taskNum; i++) {
@@ -312,7 +304,7 @@ public class GGA_I_Main {
                     count++;
                 }
             }
-            //若该任务未分配完
+            //If the task is not fully assigned
             while (count < p[i]) {
                 workerIndex = random.nextInt(workerNum);
                 if (individual.getAssignMap().get(workerIndex).size() >= q ||
@@ -327,14 +319,15 @@ public class GGA_I_Main {
 
 
     /**
-     * 变异：随机交换个体基因的两个元素
+     * Mutation: Randomly swapping two elements of an individual gene
      *
      */
     public void mutate(List<Individual> population, Random random) {
         for (Individual individual : population) {
-            //当随机数小于变异概率时，对个体的基因进行变异
+            //When the random number is less than the mutation probability,
+            // the genes of the individual are mutated
             if (random.nextDouble() < mutateRate) {
-                //对个体基因中的两个元素进行交换
+                //Two elements in an individual gene are exchanged
                 individual.mutation2();
 
             }
@@ -342,7 +335,7 @@ public class GGA_I_Main {
     }
 
     /**
-     * 深拷贝对象
+     * Deep copy object
      *
      * @return {@code Object}
      */
@@ -355,9 +348,9 @@ public class GGA_I_Main {
         try {
             bos = new ByteArrayOutputStream();
             oos = new ObjectOutputStream(bos);
-            //将对象写到流里
+            //Write objects to streams
             oos.writeObject(srcObject);
-            //从流里读回来
+            //Read back from the stream
             bis = new ByteArrayInputStream(bos.toByteArray());
             ois = new ObjectInputStream(bis);
             result = ois.readObject();

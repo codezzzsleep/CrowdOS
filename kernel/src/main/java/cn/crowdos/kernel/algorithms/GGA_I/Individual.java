@@ -7,8 +7,8 @@ import java.security.SecureRandom;
 import java.util.*;
 
 /**
- * 个体
- * 执行Serializable接口为了”序列化实现深拷贝”
+ * individual
+ * Implement Serializable interface in order to "serialize deep copy"
  *
  * @author wushengjie
  */
@@ -16,25 +16,35 @@ import java.util.*;
 public class Individual implements Serializable {
 
 
-    private Map<Integer, List<Integer>> assignMap = new HashMap<>(); //染色体序列，即任务分配结果
+    //Chromosome sequence, which is the task allocation result
+    private Map<Integer, List<Integer>> assignMap = new HashMap<>();
 
-    private int workerNum; //工人数量
+    //Number of workers
+    private int workerNum;
 
-    private int taskNum; //任务数量
+    //Number of tasks
+    private int taskNum;
 
-    private int[] p; //每个任务需要多少个工人执行
+    //How many workers are required to perform each task
+    private int[] p;
 
-    private int q; //每个工人最多执行多少个任务
+    //How many tasks can each worker perform at most
+    private int q;
 
-    double[][] distanceMatrix; //距离矩阵
+    //Distance matrix
+    double[][] distanceMatrix;
 
-    double[][] taskDistanceMatrix; //任务距离矩阵
+    //Task distance matrix
+    double[][] taskDistanceMatrix;
 
-    private double distance; //路程
+    //Distance
+    private double distance;
 
-    private double fitness; //适应度（即总路程越短，适应度越高，取fitness=1.0/distance）
+    //fitness (i.e., the shorter the total distance, the higher the fitness, fitness=1.0/distance)
+    private double fitness;
 
-    private double survivalRate; //生存率（适应度越高，生存率越高）
+    //Survival rate (higher fitness means higher survival rate)
+    private double survivalRate;
 
 
     /**
@@ -49,7 +59,7 @@ public class Individual implements Serializable {
         this.q = q;
 
 
-        //初始化Map
+        //Initializing the Map
         for (int i = 0; i < workerNum; i++) {
             this.assignMap.put(i, new ArrayList<>());
 
@@ -60,7 +70,7 @@ public class Individual implements Serializable {
     }
 
     /**
-     * @param greedyType 0：最近邻贪心算法
+     * @param greedyType 0：Nearest Neighbor greedy algorithm
      */
     public Individual(int workerNum,int taskNum,double[][] distanceMatrix,double[][] taskDistanceMatrix,
                       int[] p,int q,int greedyType) {
@@ -72,7 +82,7 @@ public class Individual implements Serializable {
         this.q = q;
 
 
-        //初始化Map
+        //Initializing the Map
         for (int i = 0; i < workerNum; i++) {
             this.assignMap.put(i, new ArrayList<>());
 
@@ -83,7 +93,7 @@ public class Individual implements Serializable {
     }
 
     /**
-     * 随机初始化基因
+     * Initialize the genes randomly
      */
     public void initGenesByRandom() {
 
@@ -91,11 +101,11 @@ public class Individual implements Serializable {
         int taskIndex;
         int workerIndex;
 
-        //将任务分给工人
+        //Assign tasks to workers
         for (int i = 0; i < taskNum; i++) {
 
             for (int j = 0; j < p[i]; j++) {
-                //随机选择一个工人
+                //Select a worker at random
                 workerIndex = random.nextInt(workerNum);
 
 
@@ -112,7 +122,7 @@ public class Individual implements Serializable {
         }
 
 
-        //遍历assignMap，打乱list
+        //Iterate over the assignMap and shuffle the list
         for (int i = 0; i < workerNum; i++) {
             Collections.shuffle(assignMap.get(i));
         }
@@ -122,11 +132,11 @@ public class Individual implements Serializable {
 
 
     /**
-     * 根据NearestFirst初始化基因
+     * Genes are initialized according to NearestFirst
      */
     public void initGenesByNearestFirst(){
 
-        //复制一份距离矩阵
+        //Make a copy of the distance matrix
         double[][] distanceMatrixCopy = new double[workerNum][taskNum];
         for (int i = 0; i < workerNum; i++) {
             for (int j = 0; j < taskNum; j++) {
@@ -136,7 +146,7 @@ public class Individual implements Serializable {
         NearestFirst nearestFirst = new NearestFirst(workerNum, taskNum, distanceMatrixCopy, p, q);
         nearestFirst.taskAssign();
         Map<Integer,List<Integer>> assignMapTemp = nearestFirst.getAssignMap();
-        //复制assignMapTemp到assignMap
+        //Copy assignMapTemp to assignMap
         for (int i = 0; i < workerNum; i++) {
             for (int j = 0; j < assignMapTemp.get(i).size(); j++) {
                 assignMap.get(i).add(assignMapTemp.get(i).get(j));
@@ -148,33 +158,34 @@ public class Individual implements Serializable {
 
 
     /**
-     * 计算个体的路程距离和适应度
+     * The distance traveled and fitness of individuals are calculated
      */
     public void calculateDistanceAndFitness() {
 
         distance = 0;
-        //遍历assignMap，计算距离
+        //Iterate over the assignMap and calculate the distance
         for (int i = 0; i < workerNum; i++) {
             List<Integer> taskList = assignMap.get(i);
             if(taskList.size() == 0){
                 continue;
             }
-            //计算工人i到第一个任务的距离
+            //Calculate the distance of worker i to the first task
             distance += distanceMatrix[i][taskList.get(0)];
-            //计算工人i从第一个任务到最后一个任务的距离
+            //Calculate the distance of worker i from the first task to the last task
             for (int j = 0; j < taskList.size() - 1; j++) {
                 distance += taskDistanceMatrix[taskList.get(j)][taskList.get(j+1)];
             }
-            //计算工人i从最后一个任务到工人i的距离
+            //Calculate the distance of worker i from the last task to worker i
             distance += distanceMatrix[i][taskList.get(taskList.size()-1)];
         }
 
-        //计算适应度
+        //Calculating fitness
         fitness = 1.0 / distance;
     }
 
     /**
-     * FIXME 变异操作1：随机将一个工人的一个任务与另一个工人的一个任务交换  目前有BUG，陷入死循环
+     * FIXME Mutation operation 1: Randomly swap a task of one worker with a task of another
+     * worker currently buggy, trapped in an endless loop
      */
     public void mutation() {
 
@@ -182,7 +193,7 @@ public class Individual implements Serializable {
         int workerIndex1;
         int workerIndex2;
 
-        //随机选择一个工人1，任务列表非空
+        //A worker 1 is randomly selected and the task list is nonempty
         while(true){
             workerIndex1 = random.nextInt(workerNum);
             if (assignMap == null){
@@ -194,18 +205,19 @@ public class Individual implements Serializable {
         }
 
         while(true) {
-            //随机选择一个工人2
+            //Choose a worker 2 at random
             workerIndex2 = random.nextInt(workerNum);
 
-            //避免重复选择
+            //Avoid repeated selection
             while (workerIndex1 == workerIndex2) {
                 workerIndex2 = random.nextInt(workerNum);
             }
 
-            //获取工人1的第一个任务
+            //Get the first task of worker 1
             int taskIndex = assignMap.get(workerIndex1).get(0);
 
-            //如果工人2的任务列表中不包含工人1的第一个任务，则跳出循环，否则继续选择工人2
+            //If the task list of worker 2 does not contain the first task of worker 1,
+            // then break out of the loop, otherwise continue selecting worker 2
             if (assignMap.get(workerIndex2).contains(taskIndex)) {
                 continue;
             }
@@ -218,7 +230,7 @@ public class Individual implements Serializable {
 
 
     /**
-     *变异操作2：随机选择一个工人，打乱其任务列表
+     *Mutation Operation 2: Randomly select a worker and shuffle its task list
      */
     public void mutation2() {
         Random random = new SecureRandom();

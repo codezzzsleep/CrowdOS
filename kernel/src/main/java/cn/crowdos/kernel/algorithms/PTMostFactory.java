@@ -19,9 +19,10 @@ public class PTMostFactory extends AlgoFactoryAdapter {
     }
 
     /**
-     * 单任务分配
+     * The getTaskAssignmentAlgo function is used to return a PTMost TaskAssignmentAlgo object that can be used by the
+     * kernel to assign tasks. The function should return an instance of a class that implements the TaskAssignmentAlgo interface.
      *
-     * @return {@code TaskAssignmentAlgo}
+     * @return a TaskAssignmentAlgo object
      */
     @Override
     public TaskAssignmentAlgo getTaskAssignmentAlgo() {
@@ -29,19 +30,20 @@ public class PTMostFactory extends AlgoFactoryAdapter {
             @Override
             public List<List<Participant>> getAssignmentScheme(ArrayList<Task> tasks) {
                 if(resourceCollection.getResourceHandler(ParticipantPool.class) == null){
-                    throw new NullPointerException("participantpool is null");
+                    throw new NullPointerException("ParticipantPool is null");
                 }
                     ParticipantPool participants = resourceCollection.getResourceHandler(ParticipantPool.class).getResourceView();
 
 
-                //所有任务的位置信息
+                //Location information for all crowd tasks
                 List<Coordinate> taskLocations = new ArrayList<>();
-                //所有候选者的位置信息
+                //Location information for all candidates
                 List<Coordinate> candidateLocations = new ArrayList<>();
-                //保留所有候选者
-                List<Participant> canditates = new ArrayList<>();
+                //reserve All candidates
+                List<Participant> candidates = new ArrayList<>();
 
-                //遍历tasks
+                //Iterate over all tasks
+                //The task constraints required in the algorithm are obtained, where is the task location
                 for (Task task : tasks){
                     List<Constraint> taskConstraint = task.constraints().stream()
                             .filter(constraint -> constraint instanceof POIConstraint)
@@ -50,77 +52,89 @@ public class PTMostFactory extends AlgoFactoryAdapter {
                         return null;
                     }
                     Coordinate taskLocation = (Coordinate) taskConstraint.get(0);
-                    //将taskLocation加入taskLocations
+                    //add taskLocation to taskLocations
                     taskLocations.add(taskLocation);
                 }
 
 
+                //Get the worker candidates that satisfy the task constraints
                 for (Participant participant:participants){
                     for (Task task:tasks){
                         if(!task.canAssignTo(participant)){
                             continue;
                         }
+                        candidates.add(participant);
+                        break;
                     }
-                    canditates.add(participant);
                 }
 
+                //Get the number of tasks and the number of workers.
                 int taskNum = tasks.size();
-                int workerNum = canditates.size();
+                int workerNum = candidates.size();
 
-                //遍历candidates,将其位置信息加入candidateLocations
-                for (Participant candidate : canditates){
+                //Iterate through the candidates to add their location information to candidateLocations
+                for (Participant candidate : candidates){
                     Coordinate candidateLocation = (Coordinate) candidate.getAbility(Coordinate.class);
                     candidateLocations.add(candidateLocation);
                 }
 
-                //任务-工作者距离矩阵
+                //Compute task-worker distance matrix
                 double[][] distanceMatrix = new double[workerNum][taskNum];
-                //任务距离矩阵
+                //Compute task-task distance matrix
                 double[][] taskDistanceMatrix = new double[taskNum][taskNum];
 
-                //根据candidateLocations和taskLocations计算距离矩阵
+                //Calculate the task-worker distance matrix based on candidateLocations and taskLocations
                 for (int i = 0; i < workerNum; i++){
                     for (int j = 0; j < taskNum; j++){
                         distanceMatrix[i][j] = candidateLocations.get(i).euclideanDistance(taskLocations.get(j));
                     }
                 }
 
-                //根据taskLocations计算任务距离矩阵
+                //Calculate the task distance matrix based on taskLocations
                 for (int i = 0; i < taskNum; i++){
                     for (int j = 0; j < taskNum; j++){
                         taskDistanceMatrix[i][j] = taskLocations.get(i).euclideanDistance(taskLocations.get(j));
                     }
                 }
 
-                //默认每个任务只需要一个参与者
+                //By default, only one participant is required per task
                 int[] p =new int[taskNum];
                 for (int i =0; i < taskNum; i++){
                     p[i] = 1;
                 }
 
-                //创建算法实体
+                //Create PT_Most algorithmic entities
                 PT_Most pt_most = new PT_Most(workerNum, taskNum, distanceMatrix, taskDistanceMatrix, p, 1);
                 pt_most.taskAssign();
 
-                //保存任务分配结果
+                //Save the task assignment results
                 List<List<Participant>> assignmentScheme = new ArrayList<>(taskNum);
+                Map<Integer, List<Participant>> taskToParticipants = new HashMap<>();
 
 
                 /*
-                 *
-                将pt_most.getAssignMap()中的数据加入assignmentScheme,由于原算法结果为map<worker,List<task>>,
-                而我们的内核结果为task对应的worker，所以需要转换
+                *Add the data from pt_most.getAssignMap() to assignmentScheme,
+                * because the original algorithm result is map<worker, List<task>>,
+                * but our kernel result is the worker corresponding to the task,
+                * so it needs to be converted
                 **/
                 for (Map.Entry<Integer, List<Integer>> entry : pt_most.getAssignMap().entrySet()){
-                    Participant participant = canditates.get(entry.getKey());
+                    Participant participant = candidates.get(entry.getKey());//participant
+                    List<Integer> m_tasks = entry.getValue();//tasks list
 
-                    for (Integer taskId : entry.getValue()){
-                            assignmentScheme.get(taskId).add(participant);
+                    for (Integer taskId : m_tasks){
+                        List<Participant> m_participants = taskToParticipants.getOrDefault(taskId,new ArrayList<>());
+                        m_participants.add(participant);
+                        taskToParticipants.put(taskId,m_participants);
                     }
 
                 }
-
-
+                Set<Integer> set= taskToParticipants.keySet();
+                Object[] arr = set.toArray();
+                Arrays.sort(arr);
+                for (Object taskID : arr){
+                    assignmentScheme.add(taskToParticipants.get(Integer.parseInt(taskID.toString())));
+                }
                 return assignmentScheme;
             }
 

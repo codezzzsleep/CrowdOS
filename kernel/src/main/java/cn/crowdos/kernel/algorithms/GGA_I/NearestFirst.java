@@ -7,25 +7,25 @@ import java.util.Map;
 
 
 /**
- * @author wushengjie
- * 基于贪心的任务分配算法NearestFirst
- * GGA-I用来初始化种群
- * 距离矩阵中，row表示工人，col表示任务
+ *
+ * Greedy based task allocation algorithm NearestFirst
+ * GGA-I is used to initialize the population
+ * In the distance matrix, row represents workers and col represents tasks
+ *
+ *  @author wushengjie
  */
 public class NearestFirst {
 
-    private int workerNum; //工人数量
+    private final int workerNum;
 
-    private int taskNum; //任务数量
-    private double[][] distanceMatrix; //距离矩阵
+    private final int taskNum;
+    private final double[][] distanceMatrix;
 
-    private int q = 3; //每个工人最多执行多少个任务
+    private int q = 3;
+    private final int[] p;
 
-    private int[] p; //每个任务需要多少个工人执行
-
-    private Map<Integer, List<Integer>> assignMap = new HashMap<>(); //任务分配结果
-
-    private final double INF = Double.MAX_VALUE;
+    //Task allocation results
+    private final Map<Integer, List<Integer>> assignMap = new HashMap<>();
 
 
     public NearestFirst(int workerNum,int taskNum, double[][] distanceMatrix,int[] p , int q) {
@@ -35,7 +35,7 @@ public class NearestFirst {
         this.q = q;
         this.p = p;
 
-        //初始化Map
+        //Initializing the Map
         for (int i = 0; i < workerNum; i++) {
             this.assignMap.put(i, new ArrayList<>());
         }
@@ -43,21 +43,21 @@ public class NearestFirst {
 
 
     /**
-     * 算法主体函数
+     * Algorithm body function
      */
     public void taskAssign() {
 
         int[] index;
 
-        //工人序号
+        //Worker serial number
         int workerIndex;
 
-        //任务序号
+        //Task sequence number
         int taskIndex;
 
         while (true) {
 
-            //检查所有任务是否分配完成
+            //Check that all tasks have been assigned
             if (allTaskFinish()) {
                 break;
             }
@@ -66,30 +66,31 @@ public class NearestFirst {
             workerIndex = index[0];
             taskIndex = index[1];
 
-            //检查该工人是否还能执行任务,该任务是否还需要工人
+            //Check whether the worker is still able to perform the task and whether the task still needs workers
+            double INF = Double.MAX_VALUE;
             if(assignMap.get(workerIndex).size() >= q || countTaskIndex(taskIndex) == p[taskIndex]){
 
-                ////该工人无法再接受任务了，将该行元素全设为最大
+                //The worker cannot accept any more tasks, so set the elements of this row to the maximum value
                 if (assignMap.get(workerIndex).size() >= q){
 
                     for (int i = 0; i < taskNum; i++) {
                         distanceMatrix[workerIndex][i] = INF;
                     }
                 }
-                //该任务不再工人了，将该列元素全设为最大
+                //The task is no longer a worker, and the column element is set to maximum
                 if (countTaskIndex(taskIndex) == p[taskIndex]){
 
                     for (int i = 0; i < workerNum; i++) {
                         distanceMatrix[i][taskIndex] = INF;
                     }
                 }
-                //跳过当前循环，不分配任务
+                //Skip the current loop without assigning tasks
                 continue;
             }
 
-            //加入分配结果Map
+            //Join the allocation result Map
             assignMap.get(workerIndex).add(taskIndex);
-            //重置矩阵
+            //Reset matrix
             distanceMatrix[workerIndex][taskIndex] = INF;
 
         }
@@ -97,8 +98,10 @@ public class NearestFirst {
     }
 
     /**
-     * 查询Map所有List中该任务出现的次数，即该任务分给多少工人了
-     * @return int
+     * Query the number of times the task appears in all lists of the Map,
+     * that is, how many workers the task was assigned to
+     *
+     * @return int how many workers the task was assigned to
      */
     public int countTaskIndex(int taskIndex) {
         int count = 0;
@@ -111,7 +114,8 @@ public class NearestFirst {
     }
 
     /**
-     * 检查所有任务是否分配完成
+     * Check that all tasks have been assigned
+     *
      * @return boolean
      */
     public boolean allTaskFinish(){
@@ -125,7 +129,8 @@ public class NearestFirst {
 
 
     /**
-     * 返回距离矩阵中最小值的下标
+     * Returns the index of the smallest value in the distance matrix
+     *
      * @return {@code int[]}
      */
     public int[] findMinIndex() {
@@ -145,19 +150,19 @@ public class NearestFirst {
 
 
     /**
-     *打印任务分配结果
+     *Print the assignment result
      */
     public void printAssignMap() {
         for (Map.Entry<Integer, List<Integer>> entry : assignMap.entrySet()) {
-            System.out.println("工人" + entry.getKey() + "分配的任务为：" + entry.getValue());
+            System.out.println("worker" + entry.getKey() + "The assigned task is：" + entry.getValue());
         }
     }
 
     /**
-     *打印距离矩阵
+     *Print distance matrix
      */
     public void printDistanceMatrix(){
-        System.out.println("当前距离矩阵为------------------------------------");
+        System.out.println("The current distance matrix is------------------------------------");
         for (int i = 0; i < distanceMatrix.length; i++) {
             for (int j = 0; j < distanceMatrix[i].length; j++) {
                 System.out.print(distanceMatrix[i][j] + " ");

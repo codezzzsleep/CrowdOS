@@ -101,6 +101,16 @@ public class Kernel implements CrowdKernel {
 
 
     //The system provides PTMost, T_Most, T_Random and GGA_I algorithms by default. If necessary, you can choose them by yourself
+
+    /**
+     * The algoSelect function is used to select the algorithm that will be used by the scheduler.
+     * The system provides PTMost, T_Most, T_Random and GGA_I algorithms by default.If you need, you can choose them by yourself.
+     * If you don't need to select algorithm, the system will provide default algorithm "DefaultAlgo".
+     * If you provide new algorithm, please add the algorithm selection to this function.
+     *
+     * @param name Select the needed algorithm and change algorithms in resource's AlgoFactory.
+     *
+     */
     @Override
     public void algoSelect(String name){
         Scheduler resource = systemResourceCollection.getResourceHandler(Scheduler.class).getResource();
@@ -169,6 +179,15 @@ public class Kernel implements CrowdKernel {
         return credibility.IncentiveAssignment();
     }
 
+    /**
+     * The getTaskAssignmentScheme(@code{ArrayList<Task>} tasks) function is used to assign tasks to participants.
+     * The function takes in a list of tasks and returns a list of participant lists, where each sublist
+     * contains the participants assigned to that task.
+     *
+     * @param tasks Pass the tasks to be assigned to the scheduler
+     *
+     * @return A list of participant lists.
+     */
     @Override
     public List<List<Participant>> getTaskAssignmentScheme(ArrayList<Task> tasks){
         Scheduler resource = systemResourceCollection.getResourceHandler(Scheduler.class).getResource();
@@ -180,6 +199,15 @@ public class Kernel implements CrowdKernel {
         Scheduler resource = systemResourceCollection.getResourceHandler(Scheduler.class).getResource();
         return resource.taskRecommendation(task);
     }
+    /**
+     * The etTaskRecommendationScheme(@code{ArrayList<Task>} tasks) function is used to assign tasks to participants.
+     * The function takes in a list of tasks and returns a list of participant lists,where each sublist
+     * contains the participants recommended to that task.
+     *
+     * @param tasks Pass the tasks to be recommended to the scheduler
+     *
+     * @return A list of participant lists.
+     */
     @Override
     public List<List<Participant>> getTaskRecommendationScheme(ArrayList<Task> tasks){
         Scheduler resource = systemResourceCollection.getResourceHandler(Scheduler.class).getResource();
@@ -190,6 +218,15 @@ public class Kernel implements CrowdKernel {
         Scheduler resource = systemResourceCollection.getResourceHandler(Scheduler.class).getResource();
         return resource.participantSelection(task);
     }
+    /**
+     * The getTaskParticipantSelectionResult(@code{ArrayList<Task>} tasks) function is used to assign tasks to participants.
+     * The function takes in a list of tasks and returns a list of participant lists,where each sublist
+     * contains the participants selected for that task.
+     *
+     * @param tasks Pass the tasks to be selected for to the scheduler
+     *
+     * @return A list of participant lists.
+     */
     @Override
     public List<List<Participant>> getTaskParticipantSelectionResult(ArrayList<Task> tasks){
         Scheduler resource = systemResourceCollection.getResourceHandler(Scheduler.class).getResource();

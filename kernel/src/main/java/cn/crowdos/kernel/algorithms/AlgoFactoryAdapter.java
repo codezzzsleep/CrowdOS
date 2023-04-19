@@ -15,6 +15,13 @@ public class AlgoFactoryAdapter implements AlgoFactory{
     public AlgoFactoryAdapter(SystemResourceCollection resourceCollection){
         this.resourceCollection = resourceCollection;
     }
+    /**
+     * The getParticipantSelectionAlgo function returns a ParticipantSelectionAlgo object that is used to select
+     * participants for tasks. The algorithm implemented here selects all available participants who can perform the task.
+     *
+     * @return A new instance of ParticipantSelectionAlgo
+     *
+     */
     @Override
     public ParticipantSelectionAlgo getParticipantSelectionAlgo() {
 
