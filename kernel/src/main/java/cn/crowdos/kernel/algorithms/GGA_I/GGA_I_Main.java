@@ -38,13 +38,13 @@ public class GGA_I_Main {
 
 
     /**
-     *  @param workerNum          Number of workers
-     *      * @param taskNum            Number of tasks
-     *      * @param distanceMatrix     Worker task distance matrix, which stores the distance
-     *      *                           between a worker and a task (or the cost of a task for a worker)
-     *      * @param taskDistanceMatrix Task distance matrix, which holds the distance between tasks and tasks
-     *      * @param p                  Constraints, how many workers are needed for each task
-     *      * @param q                  Constraints, how many tasks are assigned to each worker at most
+     * @param workerNum          Number of workers
+     * @param taskNum            Number of tasks
+     * @param distanceMatrix     Worker task distance matrix, which stores the distance
+     *                           between a worker and a task (or the cost of a task for a worker)
+     * @param taskDistanceMatrix Task distance matrix, which holds the distance between tasks and tasks
+     * @param p                  Constraints, how many workers are needed for each task
+     * @param q                  Constraints, how many tasks are assigned to each worker at most
      */
     public GGA_I_Main(int workerNum, int taskNum, double[][] distanceMatrix, double[][] taskDistanceMatrix, int[] p, int q) {
         this.workerNum = workerNum;
@@ -337,7 +337,7 @@ public class GGA_I_Main {
     /**
      * Deep copy object
      *
-     * @return {@code Object}
+     * @return Object
      */
     public Object deepClone(Object srcObject) {
         ByteArrayOutputStream bos = null;

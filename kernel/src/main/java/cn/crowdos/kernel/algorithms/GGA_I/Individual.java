@@ -184,7 +184,7 @@ public class Individual implements Serializable {
     }
 
     /**
-     * FIXME Mutation operation 1: Randomly swap a task of one worker with a task of another
+     * Mutation operation 1: Randomly swap a task of one worker with a task of another
      * worker currently buggy, trapped in an endless loop
      */
     public void mutation() {

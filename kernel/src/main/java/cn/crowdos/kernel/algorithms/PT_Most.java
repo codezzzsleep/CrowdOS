@@ -204,9 +204,10 @@ public class PT_Most {
 
     }
 
-    //todo checks whether the passed arguments are valid,
-    // such as the number of workers p[i] required for a task
-    // does not match the maximum number q of tasks each worker can accept
+
+    //to do checks whether the passed arguments are valid,
+    //such as the number of workers p[i] required for a task
+    //does not match the maximum number q of tasks each worker can accept
 
     /**
      * The worker with the most assigned tasks
