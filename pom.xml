@@ -7,7 +7,7 @@
     <groupId>cn.crowdos</groupId>
     <artifactId>CrowdOS</artifactId>
     <packaging>pom</packaging>
-    <version>1.0.1</version>
+    <version>1.0.3</version>
     <modules>
         <module>kernel</module>
         <module>DataService</module>
@@ -95,6 +95,19 @@
             </roles>
             <properties>
                 <picUrl>./images/lihaoyang.jpg</picUrl>
+            </properties>
+        </developer>
+        <developer>
+            <name>Lixin Huang</name>
+            <email>1401507265@qq.com</email>
+            <timezone>8</timezone>
+            <organization>NWPU Human Behavioral Dynamics Group</organization>
+            <roles>
+                <role>CrowdOS-gateway architect</role>
+                <role>developer</role>
+            </roles>
+            <properties>
+                <picUrl>./images/huanglixin.jpg</picUrl>
             </properties>
         </developer>
         <developer>

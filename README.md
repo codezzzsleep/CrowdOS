@@ -17,7 +17,7 @@ If you use Maven or Gradle, add a dependency with following coordinates to your 
     <dependency>
         <groupId>cn.crowdos</groupId>
         <artifactId>crowdos-kernel</artifactId>
-        <version>1.0.1</version>
+        <version>1.0.3</version>
     </dependency>
 </dependencies>
 ```

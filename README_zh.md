@@ -15,7 +15,7 @@ CrowdOS可在Maven中心获得。
     <dependency>
         <groupId>cn.crowdos</groupId>
         <artifactId>crowdos-kernel</artifactId>
-        <version>1.0.1</version>
+        <version>1.0.3</version>
     </dependency>
 </dependencies>
 ```
